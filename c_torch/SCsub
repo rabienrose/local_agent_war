@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+
+Import("env")
+Import("env_modules")
+
+env_torch = env_modules.Clone()
+env_torch.add_source_files(env.modules_sources, "*.cpp")
+
+
+if env["platform"] == "android":
+    env_torch.Append(CPPPATH=["/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/include","/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/include/torch/csrc/api/include"])
+    env_torch.Append(CXXFLAGS=["-fexceptions","-frtti"])
+    env.Append(CXXFLAGS=["-fexceptions","-frtti"])
+    env.Append(LIBPATH=['/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib'])
+    # env.Append(LIBS=['torch_cpu','torch','c10','cpuinfo', 'clog','pthreadpool','eigen_blas'])
+    libs=[]
+    libs.append('torch_cpu')
+    libs.append('c10')
+    libs.append('torch')
+    libs.append('nnpack')
+    libs.append('XNNPACK')
+    libs.append('cpuinfo')
+    libs.append('clog')
+    libs.append('pthreadpool')
+    libs.append('eigen_blas')
+    libs.append('kineto')
+    # env.Append(LIBS=libs)
+    link_flags=[]
+    link_flags.append("-Wl,--whole-archive")
+    link_flags.append('-Wl,-force_load,/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libtorch_cpu.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libtorch.a')
+    link_flags.append('-Wl,-force_load,/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libc10.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libnnpack.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libXNNPACK.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libcpuinfo.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libclog.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libpthreadpool.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libpytorch_qnnpack.a')
+    # link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libkineto.a')
+    link_flags.append("-Wl,--no-whole-archive")
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/lib/libbreakpad.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/lib/libbreakpad_common.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/lib/libVulkanWrapper.a')
+    link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/lib/libeigen_blas.a')
+    # link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/lib/libprotobuf.a')
+    # link_flags.append('/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/lib/libfoxi_loader.a')
+    
+    # link_flags.append("-Wl,-force_load,/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libtorch.a")
+    # link_flags.append("-Wl,-force_load,/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/lib/libtorch_cpu.a")
+    env.Append(LINKFLAGS=link_flags)
+
+else:
+    env_torch.Append(CPPPATH=["/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/include","/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build_android/install/include/torch/csrc/api/include"])
+    env_torch.Append(CXXFLAGS=["-D_GLIBCXX_USE_CXX11_ABI=1"])
+    env.Append(LIBPATH=['/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build/lib'])
+    env.Append(LIBS=['torch_cpu','c10','torch','pthread'])
+    env.Append(LINKFLAGS=["-Wl,-rpath,/home/rabienrose/Documents/code/pytorch-android-cpp-demo/pytorch/build/lib"])
+    
+    
