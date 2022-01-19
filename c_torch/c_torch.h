@@ -14,22 +14,38 @@
 #include <torch/csrc/jit/mobile/module.h>
 #include <torch/csrc/jit/mobile/observer.h>
 
+class Net;
+
+namespace torch{
+    namespace optim{
+        class Adam;
+    }
+}
+
 class CTorch : public Reference {
     GDCLASS(CTorch, Reference);
-    torch::jit::mobile::Module module;
-    std::vector<at::Tensor> obs_tensor;
-    std::vector<torch::jit::IValue> inputs;
-    PoolVector<int> outs;
 protected:
     static void _bind_methods();
 
-public:
-    PoolVector<int> get_action(const PoolVector<float> &obs);
-    void test_train();
-    void create_model();
-    int load_model(String model_path);
+private:
+    int get_model(String agent_name, int hiddens);
+    int get_optim(String agent_name, int hiddens);
+    std::map<String, std::shared_ptr<Net>> model_dict;
+    std::map<String, std::shared_ptr<torch::optim::Adam>> optim_dict;
+    int mini_batch_size=512;
+    float learning_rate=0.0001;
+    float epoch=3;
+    float epsilon=0.2;
+    float beta=0.005;
 
+public:
+    void set_opti_params(Dictionary setting);
+    Dictionary train(String agent_name, Array data, int hiddens);
+    void create_model(String agent_name, int hiddens);
+    bool load_model(String agent_name, int hiddens);
+    PoolVector<float> get_action(const PoolVector<float> &obs, String agent_name, bool b_train);
+    Variant test_variant(Variant data);
     CTorch();
 };
 
-#endif // SUMMATOR_H
+#endif
