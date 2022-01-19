@@ -11,6 +11,7 @@ script = ExtResource( 2 )
 players_path = [ NodePath("Agent") ]
 targets_path = [ NodePath("Target"), NodePath("Target2") ]
 scene_path = NodePath("SimpleField")
+camera_path = NodePath("CameraRig")
 
 [node name="SimpleField" parent="." instance=ExtResource( 1 )]
 

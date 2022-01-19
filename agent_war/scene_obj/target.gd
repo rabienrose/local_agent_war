@@ -30,12 +30,13 @@ func init(_game):
 
 func get_obs_data(player_posi):
     var obs_data=[0,0,0]
-    obs_data[0]=translation.x-player_posi.x
-    obs_data[1]=translation.z-player_posi.z
+    obs_data[0]=(translation.x-player_posi.x)/game.scene_size
+    obs_data[1]=(translation.z-player_posi.z)/game.scene_size
     if picked:
         obs_data[2]=1
     return obs_data
 
 func _on_Target_body_entered(body):
+    body.on_get_target(self)
     set_picked(true)
-    Global.emit_signal("on_get_target",body,self)
+    
